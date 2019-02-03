@@ -23,6 +23,7 @@ The improvements made to these modules are as follows:
 - Adapt `FindSDL.cmake` to `SDL2` (`FindSDL2.cmake`).
 - Add cache variables for more flexibility:<br>
     `SDL2_PATH`, `SDL2_NO_DEFAULT_PATH`
+- Mark `Threads` as a required dependency for non-OSX systems.
 
 *For more details, please see the embedded documentation in `FindSDL2.cmake` file.*
 
@@ -31,6 +32,7 @@ The improvements made to these modules are as follows:
 - Adapt `FindSDL_<COMPONENT>.cmake` to `SDL2_<COMPONENT>` (`FindSDL2_<COMPONENT>.cmake`).
 - Add cache variables for more flexibility:<br>
     `SDL2_<COMPONENT>_PATH`, `SDL2_<COMPONENT>_NO_DEFAULT_PATH`
+- Add `SDL2` as a required dependency.
 
 *For more details, please see the embedded documentation in
 `FindSDL2_<COMPONENT>.cmake` file.*
