@@ -165,7 +165,7 @@ endif()
 set(SDL2_IMAGE_LIBRARIES ${SDL2_IMAGE_LIBRARY})
 set(SDL2_IMAGE_INCLUDE_DIRS ${SDL2_IMAGE_INCLUDE_DIR})
 
-include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+include(FindPackageHandleStandardArgs)
 
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL2_image
                                   REQUIRED_VARS SDL2_IMAGE_LIBRARIES SDL2_IMAGE_INCLUDE_DIRS
