@@ -7,6 +7,16 @@ FindSDL2_image
 
 Locate SDL2_image library
 
+This module defines the following 'IMPORTED' target:
+
+::
+
+  SDL2::Image
+    The SDL2_image library, if found.
+    Have SDL2::Core as a link dependency.
+
+
+
 This module will set the following variables in your project:
 
 ::
@@ -42,8 +52,9 @@ Additional Note: If you see an empty SDL2_IMAGE_LIBRARY in your project
 configuration, it means CMake did not find your SDL2_image library
 (SDL2_image.dll, libsdl2_image.so, etc). Set SDL2_IMAGE_LIBRARY to point
 to your SDL2_image library, and  configure again. This value is used to
-generate the final SDL2_IMAGE_LIBRARIES variable, but when this value is
-unset, SDL2_IMAGE_LIBRARIES does not get created.
+generate the final SDL2_IMAGE_LIBRARIES variable and the SDL2::Image target,
+but when this value is unset, SDL2_IMAGE_LIBRARIES and SDL2::Image does not
+get created.
 
 
 $SDL2IMAGEDIR is an environment variable that would correspond to the
@@ -59,6 +70,8 @@ Created by Amine Ben Hassouna:
   Add cache variables for more flexibility:
     SDL2_IMAGE_PATH, SDL2_IMAGE_NO_DEFAULT_PATH (for details, see doc above).
   Add SDL2 as a required dependency.
+  Modernize the FindSDL2_image.cmake module by creating a specific target:
+    SDL2::Image (for details, see doc above).
 
 Original FindSDL_image.cmake module:
   Created by Eric Wing.  This was influenced by the FindSDL.cmake
@@ -164,3 +177,15 @@ mark_as_advanced(SDL2_IMAGE_PATH
                  SDL2_IMAGE_LIBRARY
                  SDL2_IMAGE_INCLUDE_DIR)
 
+
+if(SDL2_IMAGE_FOUND)
+
+  # SDL2::Image target
+  if(SDL2_IMAGE_LIBRARY AND NOT TARGET SDL2::Image)
+    add_library(SDL2::Image UNKNOWN IMPORTED)
+    set_target_properties(SDL2::Image PROPERTIES
+                          IMPORTED_LOCATION "${SDL2_IMAGE_LIBRARY}"
+                          INTERFACE_INCLUDE_DIRECTORIES "${SDL2_IMAGE_INCLUDE_DIR}"
+                          INTERFACE_LINK_LIBRARIES SDL2::Core)
+  endif()
+endif()
