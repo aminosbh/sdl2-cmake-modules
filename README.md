@@ -42,6 +42,53 @@ The improvements made to these modules are as follows:
 *For more details, please see the embedded documentation in
 `FindSDL2_<COMPONENT>.cmake` file.*
 
+## Usage
+
+There is two approaches that can be adopted: A legacy approach and a modern
+approach. Both of them are supported.
+
+### Modern CMake
+
+We can link to the SDL2:: targets like the following example:<br>
+*This example requires the SDL2, SDL2_image and the SDL2_gfx libraries*
+
+```cmake
+# Find SDL2, SDL2_image and SDL2_gfx libraries
+find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
+find_package(SDL2_gfx REQUIRED)
+
+# Link SDL2::Main, SDL2::Image and SDL2::GFX to our project
+target_link_libraries(${PROJECT_NAME} SDL2::Main SDL2::Image SDL2::GFX)
+```
+
+*Use the appropriate packages for you project.*<br>
+*Please see above, for the whole list of packages*<br>
+*For more details, please see the embedded documentation in modules files*
+
+### Legacy CMake
+
+We can also specify manually the include directories and libraries to link to:
+
+```cmake
+# Find and link SDL2
+find_package(SDL2 REQUIRED)
+target_include_directories(${PROJECT_NAME} PRIVATE ${SDL2_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
+
+# Find and link SDL2_image
+find_package(SDL2_image REQUIRED)
+target_include_directories(${PROJECT_NAME} PRIVATE ${SDL2_IMAGE_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} ${SDL2_IMAGE_LIBRARIES})
+
+# Find and link SDL2_gfx
+find_package(SDL2_gfx REQUIRED)
+target_include_directories(${PROJECT_NAME} PRIVATE ${SDL2_GFX_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} ${SDL2_GFX_LIBRARIES})
+
+```
+
+*For more details, please see the embedded documentation in modules files*
 
 ## Special customization variables
 
