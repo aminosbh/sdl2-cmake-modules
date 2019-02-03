@@ -7,6 +7,16 @@ FindSDL2_net
 
 Locate SDL2_net library
 
+This module defines the following 'IMPORTED' target:
+
+::
+
+  SDL2::Net
+    The SDL2_net library, if found.
+    Have SDL2::Core as a link dependency.
+
+
+
 This module will set the following variables in your project:
 
 ::
@@ -42,8 +52,9 @@ Additional Note: If you see an empty SDL2_NET_LIBRARY in your project
 configuration, it means CMake did not find your SDL2_net library
 (SDL2_net.dll, libsdl2_net.so, etc). Set SDL2_NET_LIBRARY to point
 to your SDL2_net library, and  configure again. This value is used to
-generate the final SDL2_NET_LIBRARIES variable, but when this value is
-unset, SDL2_NET_LIBRARIES does not get created.
+generate the final SDL2_NET_LIBRARIES variable and the SDL2::Net target,
+but when this value is unset, SDL2_NET_LIBRARIES and SDL2::Net does not
+get created.
 
 
 $SDL2NETDIR is an environment variable that would correspond to the
@@ -59,6 +70,8 @@ Created by Amine Ben Hassouna:
   Add cache variables for more flexibility:
     SDL2_NET_PATH, SDL2_NET_NO_DEFAULT_PATH (for details, see doc above).
   Add SDL2 as a required dependency.
+  Modernize the FindSDL2_net.cmake module by creating a specific target:
+    SDL2::Net (for details, see doc above).
 
 Original FindSDL_net.cmake module:
   Created by Eric Wing.  This was influenced by the FindSDL.cmake
@@ -164,3 +177,15 @@ mark_as_advanced(SDL2_NET_PATH
                  SDL2_NET_LIBRARY
                  SDL2_NET_INCLUDE_DIR)
 
+
+if(SDL2_NET_FOUND)
+
+  # SDL2::Net target
+  if(SDL2_NET_LIBRARY AND NOT TARGET SDL2::Net)
+    add_library(SDL2::Net UNKNOWN IMPORTED)
+    set_target_properties(SDL2::Net PROPERTIES
+                          IMPORTED_LOCATION "${SDL2_NET_LIBRARY}"
+                          INTERFACE_INCLUDE_DIRECTORIES "${SDL2_NET_INCLUDE_DIR}"
+                          INTERFACE_LINK_LIBRARIES SDL2::Core)
+  endif()
+endif()
