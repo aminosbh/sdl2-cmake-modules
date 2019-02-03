@@ -58,12 +58,29 @@ Created by Amine Ben Hassouna:
   Adapt FindSDL_net.cmake to SDL2_net (FindSDL2_net.cmake).
   Add cache variables for more flexibility:
     SDL2_NET_PATH, SDL2_NET_NO_DEFAULT_PATH (for details, see doc above).
+  Add SDL2 as a required dependency.
 
 Original FindSDL_net.cmake module:
   Created by Eric Wing.  This was influenced by the FindSDL.cmake
   module, but with modifications to recognize OS X frameworks and
   additional Unix paths (FreeBSD, etc).
 #]=======================================================================]
+
+# SDL2 Library required
+find_package(SDL2 QUIET)
+if(NOT SDL2_FOUND)
+  set(SDL2_NET_SDL2_NOT_FOUND "Could NOT find SDL2 (SDL2 is required by SDL2_net).")
+  if(SDL2_net_FIND_REQUIRED)
+    message(FATAL_ERROR ${SDL2_NET_SDL2_NOT_FOUND})
+  else()
+      if(NOT SDL2_net_FIND_QUIETLY)
+        message(STATUS ${SDL2_NET_SDL2_NOT_FOUND})
+      endif()
+    return()
+  endif()
+  unset(SDL2_NET_SDL2_NOT_FOUND)
+endif()
+
 
 # Define options for searching SDL2_net Library in a custom path
 
