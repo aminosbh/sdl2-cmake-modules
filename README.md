@@ -132,6 +132,16 @@ set(SDL2_TTF_PATH "/path/to/sdl2_ttf" CACHE BOOL "" FORCE)
 find_package(SDL2_ttf REQUIRED)
 ```
 
+## License
+
+Maintainer: Amine B. Hassouna [@aminosbh](https://gitlab.com/aminosbh)
+
+The SDL2 CMake modules are based on the SDL (1.2) modules available with the
+CMake project which is distributed under the OSI-approved BSD 3-Clause License.
+
+The SDL2 CMake modules are also distributed under the OSI-approved BSD
+3-Clause License. See accompanying file [Copyright.txt](Copyright.txt).
+
 
 
 [CMake]: https://cmake.org
