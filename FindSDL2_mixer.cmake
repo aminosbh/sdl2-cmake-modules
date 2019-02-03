@@ -56,12 +56,29 @@ Created by Amine Ben Hassouna:
   Adapt FindSDL_mixer.cmake to SDL2_mixer (FindSDL2_mixer.cmake).
   Add cache variables for more flexibility:
     SDL2_MIXER_PATH, SDL2_MIXER_NO_DEFAULT_PATH (for details, see doc above).
+  Add SDL2 as a required dependency.
 
 Original FindSDL_mixer.cmake module:
   Created by Eric Wing.  This was influenced by the FindSDL.cmake
   module, but with modifications to recognize OS X frameworks and
   additional Unix paths (FreeBSD, etc).
 #]=======================================================================]
+
+# SDL2 Library required
+find_package(SDL2 QUIET)
+if(NOT SDL2_FOUND)
+  set(SDL2_MIXER_SDL2_NOT_FOUND "Could NOT find SDL2 (SDL2 is required by SDL2_mixer).")
+  if(SDL2_mixer_FIND_REQUIRED)
+    message(FATAL_ERROR ${SDL2_MIXER_SDL2_NOT_FOUND})
+  else()
+      if(NOT SDL2_mixer_FIND_QUIETLY)
+        message(STATUS ${SDL2_MIXER_SDL2_NOT_FOUND})
+      endif()
+    return()
+  endif()
+  unset(SDL2_MIXER_SDL2_NOT_FOUND)
+endif()
+
 
 # Define options for searching SDL2_mixer Library in a custom path
 
