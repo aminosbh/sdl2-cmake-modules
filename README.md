@@ -98,7 +98,7 @@ the modules find the appropriate libraries:
 - `SDL2_PATH` and `SDL2_<COMPONENT>_PATH`:<br>
   Can be specified to set the root search path for the `SDL2` and `SDL2_<COMPONENT>`
 - `SDL2_NO_DEFAULT_PATH` and `SDL2_<COMPONENT>_NO_DEFAULT_PATH`:<br>
-  Disable search `SDL2/SDL2<COMPONENT>` library in default path:<br>
+  Disable search `SDL2/SDL2_<COMPONENT>` library in default path:<br>
     If `SDL2[_<COMPONENT>]_PATH` is set, defaults to ON<br>
     Else defaults to OFF
 - `SDL2_INCLUDE_DIR` and `SDL2_<COMPONENT>_INCLUDE_DIR`:<br>
