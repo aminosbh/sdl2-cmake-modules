@@ -41,6 +41,7 @@ The following individuals and institutions are among the Contributors:
 * Alexey Sokolov <sokolov@google.com>
 * Alex Merry <alex.merry@kde.org>
 * Alex Turbov <i.zaufi@gmail.com>
+* Amine Ben Hassouna <amine.benhassouna@gmail.com>
 * Andreas Pakulat <apaku@gmx.de>
 * Andreas Schneider <asn@cryptomilk.org>
 * André Rigland Brodtkorb <Andre.Brodtkorb@ifi.uio.no>
