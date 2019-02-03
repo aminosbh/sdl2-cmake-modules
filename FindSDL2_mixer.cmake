@@ -2,52 +2,97 @@
 # file Copyright.txt or https://cmake.org/licensing for details.
 
 #[=======================================================================[.rst:
-FindSDL_mixer
--------------
+FindSDL2_mixer
+--------------
 
-Locate SDL_mixer library
+Locate SDL2_mixer library
 
-This module defines:
-
-::
-
-  SDL_MIXER_LIBRARIES, the name of the library to link against
-  SDL_MIXER_INCLUDE_DIRS, where to find the headers
-  SDL_MIXER_FOUND, if false, do not try to link against
-  SDL_MIXER_VERSION_STRING - human-readable string containing the
-                             version of SDL_mixer
-
-
-
-For backward compatibility the following variables are also set:
+This module will set the following variables in your project:
 
 ::
 
-  SDLMIXER_LIBRARY (same value as SDL_MIXER_LIBRARIES)
-  SDLMIXER_INCLUDE_DIR (same value as SDL_MIXER_INCLUDE_DIRS)
-  SDLMIXER_FOUND (same value as SDL_MIXER_FOUND)
+  SDL2_MIXER_LIBRARIES, the name of the library to link against
+  SDL2_MIXER_INCLUDE_DIRS, where to find the headers
+  SDL2_MIXER_FOUND, if false, do not try to link against
+  SDL2_MIXER_VERSION_STRING - human-readable string containing the
+                              version of SDL2_mixer
+
+This module responds to the following cache variables:
+
+::
+
+  SDL2_MIXER_PATH
+    Set a custom SDL2_mixer Library path (default: empty)
+
+  SDL2_MIXER_NO_DEFAULT_PATH
+    Disable search SDL2_mixer Library in default path.
+      If SDL2_MIXER_PATH (default: ON)
+      Else (default: OFF)
+
+  SDL2_MIXER_INCLUDE_DIR
+    SDL2_mixer headers path.
+
+  SDL2_MIXER_LIBRARY
+    SDL2_mixer Library (.dll, .so, .a, etc) path.
+
+
+Additional Note: If you see an empty SDL2_MIXER_LIBRARY in your project
+configuration, it means CMake did not find your SDL2_mixer library
+(SDL2_mixer.dll, libsdl2_mixer.so, etc). Set SDL2_MIXER_LIBRARY to point
+to your SDL2_mixer library, and  configure again. This value is used to
+generate the final SDL2_MIXER_LIBRARIES variable, but when this value is
+unset, SDL2_MIXER_LIBRARIES does not get created.
+
+
+$SDL2MIXERDIR is an environment variable that would correspond to the
+./configure --prefix=$SDL2MIXERDIR used in building SDL2_mixer.
+
+$SDL2DIR is an environment variable that would correspond to the
+./configure --prefix=$SDL2DIR used in building SDL2.
 
 
 
-$SDLDIR is an environment variable that would correspond to the
-./configure --prefix=$SDLDIR used in building SDL.
+Created by Amine Ben Hassouna:
+  Adapt FindSDL_mixer.cmake to SDL2_mixer (FindSDL2_mixer.cmake).
+  Add cache variables for more flexibility:
+    SDL2_MIXER_PATH, SDL2_MIXER_NO_DEFAULT_PATH (for details, see doc above).
 
-Created by Eric Wing.  This was influenced by the FindSDL.cmake
-module, but with modifications to recognize OS X frameworks and
-additional Unix paths (FreeBSD, etc).
+Original FindSDL_mixer.cmake module:
+  Created by Eric Wing.  This was influenced by the FindSDL.cmake
+  module, but with modifications to recognize OS X frameworks and
+  additional Unix paths (FreeBSD, etc).
 #]=======================================================================]
 
-if(NOT SDL_MIXER_INCLUDE_DIR AND SDLMIXER_INCLUDE_DIR)
-  set(SDL_MIXER_INCLUDE_DIR ${SDLMIXER_INCLUDE_DIR} CACHE PATH "directory cache
-entry initialized from old variable name")
+# Define options for searching SDL2_mixer Library in a custom path
+
+set(SDL2_MIXER_PATH "" CACHE STRING "Custom SDL2_mixer Library path")
+
+set(_SDL2_MIXER_NO_DEFAULT_PATH OFF)
+if(SDL2_MIXER_PATH)
+  set(_SDL2_MIXER_NO_DEFAULT_PATH ON)
 endif()
-find_path(SDL_MIXER_INCLUDE_DIR SDL_mixer.h
+
+set(SDL2_MIXER_NO_DEFAULT_PATH ${_SDL2_MIXER_NO_DEFAULT_PATH}
+    CACHE BOOL "Disable search SDL2_mixer Library in default path")
+unset(_SDL2_MIXER_NO_DEFAULT_PATH)
+
+set(SDL2_MIXER_NO_DEFAULT_PATH_CMD)
+if(SDL2_MIXER_NO_DEFAULT_PATH)
+  set(SDL2_MIXER_NO_DEFAULT_PATH_CMD NO_DEFAULT_PATH)
+endif()
+
+# Search for the SDL2_mixer include directory
+find_path(SDL2_MIXER_INCLUDE_DIR SDL_mixer.h
   HINTS
-    ENV SDLMIXERDIR
-    ENV SDLDIR
-  PATH_SUFFIXES SDL
-                # path suffixes to search inside ENV{SDLDIR}
-                include/SDL include/SDL12 include/SDL11 include
+    ENV SDL2MIXERDIR
+    ENV SDL2DIR
+    ${SDL2_MIXER_NO_DEFAULT_PATH_CMD}
+  PATH_SUFFIXES SDL2
+                # path suffixes to search inside ENV{SDL2DIR}
+                # and ENV{SDL2MIXERDIR}
+                include/SDL2 include
+  PATHS ${SDL2_MIXER_PATH}
+  DOC "Where the SDL2_mixer headers can be found"
 )
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -56,46 +101,47 @@ else()
   set(VC_LIB_PATH_SUFFIX lib/x86)
 endif()
 
-if(NOT SDL_MIXER_LIBRARY AND SDLMIXER_LIBRARY)
-  set(SDL_MIXER_LIBRARY ${SDLMIXER_LIBRARY} CACHE FILEPATH "file cache entry
-initialized from old variable name")
-endif()
-find_library(SDL_MIXER_LIBRARY
-  NAMES SDL_mixer
+# Search for the SDL2_mixer library
+find_library(SDL2_MIXER_LIBRARY
+  NAMES SDL2_mixer
   HINTS
-    ENV SDLMIXERDIR
-    ENV SDLDIR
+    ENV SDL2MIXERDIR
+    ENV SDL2DIR
+    ${SDL2_MIXER_NO_DEFAULT_PATH_CMD}
   PATH_SUFFIXES lib ${VC_LIB_PATH_SUFFIX}
+  PATHS ${SDL2_MIXER_PATH}
+  DOC "Where the SDL2_mixer Library can be found"
 )
 
-if(SDL_MIXER_INCLUDE_DIR AND EXISTS "${SDL_MIXER_INCLUDE_DIR}/SDL_mixer.h")
-  file(STRINGS "${SDL_MIXER_INCLUDE_DIR}/SDL_mixer.h" SDL_MIXER_VERSION_MAJOR_LINE REGEX "^#define[ \t]+SDL_MIXER_MAJOR_VERSION[ \t]+[0-9]+$")
-  file(STRINGS "${SDL_MIXER_INCLUDE_DIR}/SDL_mixer.h" SDL_MIXER_VERSION_MINOR_LINE REGEX "^#define[ \t]+SDL_MIXER_MINOR_VERSION[ \t]+[0-9]+$")
-  file(STRINGS "${SDL_MIXER_INCLUDE_DIR}/SDL_mixer.h" SDL_MIXER_VERSION_PATCH_LINE REGEX "^#define[ \t]+SDL_MIXER_PATCHLEVEL[ \t]+[0-9]+$")
-  string(REGEX REPLACE "^#define[ \t]+SDL_MIXER_MAJOR_VERSION[ \t]+([0-9]+)$" "\\1" SDL_MIXER_VERSION_MAJOR "${SDL_MIXER_VERSION_MAJOR_LINE}")
-  string(REGEX REPLACE "^#define[ \t]+SDL_MIXER_MINOR_VERSION[ \t]+([0-9]+)$" "\\1" SDL_MIXER_VERSION_MINOR "${SDL_MIXER_VERSION_MINOR_LINE}")
-  string(REGEX REPLACE "^#define[ \t]+SDL_MIXER_PATCHLEVEL[ \t]+([0-9]+)$" "\\1" SDL_MIXER_VERSION_PATCH "${SDL_MIXER_VERSION_PATCH_LINE}")
-  set(SDL_MIXER_VERSION_STRING ${SDL_MIXER_VERSION_MAJOR}.${SDL_MIXER_VERSION_MINOR}.${SDL_MIXER_VERSION_PATCH})
-  unset(SDL_MIXER_VERSION_MAJOR_LINE)
-  unset(SDL_MIXER_VERSION_MINOR_LINE)
-  unset(SDL_MIXER_VERSION_PATCH_LINE)
-  unset(SDL_MIXER_VERSION_MAJOR)
-  unset(SDL_MIXER_VERSION_MINOR)
-  unset(SDL_MIXER_VERSION_PATCH)
+# Read SDL2_mixer version
+if(SDL2_MIXER_INCLUDE_DIR AND EXISTS "${SDL2_MIXER_INCLUDE_DIR}/SDL_mixer.h")
+  file(STRINGS "${SDL2_MIXER_INCLUDE_DIR}/SDL_mixer.h" SDL2_MIXER_VERSION_MAJOR_LINE REGEX "^#define[ \t]+SDL_MIXER_MAJOR_VERSION[ \t]+[0-9]+$")
+  file(STRINGS "${SDL2_MIXER_INCLUDE_DIR}/SDL_mixer.h" SDL2_MIXER_VERSION_MINOR_LINE REGEX "^#define[ \t]+SDL_MIXER_MINOR_VERSION[ \t]+[0-9]+$")
+  file(STRINGS "${SDL2_MIXER_INCLUDE_DIR}/SDL_mixer.h" SDL2_MIXER_VERSION_PATCH_LINE REGEX "^#define[ \t]+SDL_MIXER_PATCHLEVEL[ \t]+[0-9]+$")
+  string(REGEX REPLACE "^#define[ \t]+SDL_MIXER_MAJOR_VERSION[ \t]+([0-9]+)$" "\\1" SDL2_MIXER_VERSION_MAJOR "${SDL2_MIXER_VERSION_MAJOR_LINE}")
+  string(REGEX REPLACE "^#define[ \t]+SDL_MIXER_MINOR_VERSION[ \t]+([0-9]+)$" "\\1" SDL2_MIXER_VERSION_MINOR "${SDL2_MIXER_VERSION_MINOR_LINE}")
+  string(REGEX REPLACE "^#define[ \t]+SDL_MIXER_PATCHLEVEL[ \t]+([0-9]+)$" "\\1" SDL2_MIXER_VERSION_PATCH "${SDL2_MIXER_VERSION_PATCH_LINE}")
+  set(SDL2_MIXER_VERSION_STRING ${SDL2_MIXER_VERSION_MAJOR}.${SDL2_MIXER_VERSION_MINOR}.${SDL2_MIXER_VERSION_PATCH})
+  unset(SDL2_MIXER_VERSION_MAJOR_LINE)
+  unset(SDL2_MIXER_VERSION_MINOR_LINE)
+  unset(SDL2_MIXER_VERSION_PATCH_LINE)
+  unset(SDL2_MIXER_VERSION_MAJOR)
+  unset(SDL2_MIXER_VERSION_MINOR)
+  unset(SDL2_MIXER_VERSION_PATCH)
 endif()
 
-set(SDL_MIXER_LIBRARIES ${SDL_MIXER_LIBRARY})
-set(SDL_MIXER_INCLUDE_DIRS ${SDL_MIXER_INCLUDE_DIR})
+set(SDL2_MIXER_LIBRARIES ${SDL2_MIXER_LIBRARY})
+set(SDL2_MIXER_INCLUDE_DIRS ${SDL2_MIXER_INCLUDE_DIR})
 
 include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
 
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL_mixer
-                                  REQUIRED_VARS SDL_MIXER_LIBRARIES SDL_MIXER_INCLUDE_DIRS
-                                  VERSION_VAR SDL_MIXER_VERSION_STRING)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL2_mixer
+                                  REQUIRED_VARS SDL2_MIXER_LIBRARIES SDL2_MIXER_INCLUDE_DIRS
+                                  VERSION_VAR SDL2_MIXER_VERSION_STRING)
 
-# for backward compatibility
-set(SDLMIXER_LIBRARY ${SDL_MIXER_LIBRARIES})
-set(SDLMIXER_INCLUDE_DIR ${SDL_MIXER_INCLUDE_DIRS})
-set(SDLMIXER_FOUND ${SDL_MIXER_FOUND})
 
-mark_as_advanced(SDL_MIXER_LIBRARY SDL_MIXER_INCLUDE_DIR)
+mark_as_advanced(SDL2_MIXER_PATH
+                 SDL2_MIXER_NO_DEFAULT_PATH
+                 SDL2_MIXER_LIBRARY
+                 SDL2_MIXER_INCLUDE_DIR)
+
