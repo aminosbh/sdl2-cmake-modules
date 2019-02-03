@@ -43,8 +43,52 @@ The improvements made to these modules are as follows:
 `FindSDL2_<COMPONENT>.cmake` file.*
 
 
+## Special customization variables
+
+Each module have special customization cache variables that can be used to help
+the modules find the appropriate libraries:
+
+- `SDL2_PATH` and `SDL2_<COMPONENT>_PATH`:<br>
+  Can be specified to set the root search path for the `SDL2` and `SDL2_<COMPONENT>`
+- `SDL2_NO_DEFAULT_PATH` and `SDL2_<COMPONENT>_NO_DEFAULT_PATH`:<br>
+  Disable search `SDL2/SDL2<COMPONENT>` library in default path:<br>
+    If `SDL2[_<COMPONENT>]_PATH` is set, defaults to ON<br>
+    Else defaults to OFF
+- `SDL2_INCLUDE_DIR` and `SDL2_<COMPONENT>_INCLUDE_DIR`:<br>
+  Set headers path. (Override)
+- `SDL2_LIBRARY` and `SDL2_<COMPONENT>_LIBRARY`:<br>
+  Set the library (.dll, .so, .a, etc) path. (Override)
+- `SDL2MAIN_LIBRAY`:<br>
+  Set the `SDL2main` library (.a) path. (Override)
+
+These variables could be used in case of Windows projects, and when the
+libraries are not localized in a standard pathes. They can be specified when
+executing the `cmake` command or when using the [CMake GUI][] (They are marked
+as advanced).
+
+**cmake command example:**
+
+```sh
+mkdir build
+cd build
+cmake .. -DSDL2_PATH="/path/to/sdl2"
+```
+
+**CMakeLists.txt example:**
+
+If we embed, for example, binaries of the SDL2_ttf in our project, we can
+specify the cache variables values just before calling the `find_package`
+command as follows:
+
+```cmake
+set(SDL2_TTF_PATH "/path/to/sdl2_ttf" CACHE BOOL "" FORCE)
+find_package(SDL2_ttf REQUIRED)
+```
+
+
 
 [CMake]: https://cmake.org
+[CMake GUI]: https://cmake.org/runningcmake
 [SDL2]: https://www.libsdl.org
 [SDL2_image]: https://www.libsdl.org/projects/SDL_image
 [SDL2_ttf]: https://www.libsdl.org/projects/SDL_ttf
