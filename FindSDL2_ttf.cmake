@@ -7,6 +7,16 @@ FindSDL2_ttf
 
 Locate SDL2_ttf library
 
+This module defines the following 'IMPORTED' target:
+
+::
+
+  SDL2::TTF
+    The SDL2_ttf library, if found.
+    Have SDL2::Core as a link dependency.
+
+
+
 This module will set the following variables in your project:
 
 ::
@@ -42,8 +52,9 @@ Additional Note: If you see an empty SDL2_TTF_LIBRARY in your project
 configuration, it means CMake did not find your SDL2_ttf library
 (SDL2_ttf.dll, libsdl2_ttf.so, etc). Set SDL2_TTF_LIBRARY to point
 to your SDL2_ttf library, and  configure again. This value is used to
-generate the final SDL2_TTF_LIBRARIES variable, but when this value is
-unset, SDL2_TTF_LIBRARIES does not get created.
+generate the final SDL2_TTF_LIBRARIES variable and the SDL2::TTF target,
+but when this value is unset, SDL2_TTF_LIBRARIES and SDL2::TTF does not
+get created.
 
 
 $SDL2TTFDIR is an environment variable that would correspond to the
@@ -59,6 +70,8 @@ Created by Amine Ben Hassouna:
   Add cache variables for more flexibility:
     SDL2_TTF_PATH, SDL2_TTF_NO_DEFAULT_PATH (for details, see doc above).
   Add SDL2 as a required dependency.
+  Modernize the FindSDL2_ttf.cmake module by creating a specific target:
+    SDL2::TTF (for details, see doc above).
 
 Original FindSDL_ttf.cmake module:
   Created by Eric Wing.  This was influenced by the FindSDL.cmake
@@ -164,3 +177,15 @@ mark_as_advanced(SDL2_TTF_PATH
                  SDL2_TTF_LIBRARY
                  SDL2_TTF_INCLUDE_DIR)
 
+
+if(SDL2_TTF_FOUND)
+
+  # SDL2::TTF target
+  if(SDL2_TTF_LIBRARY AND NOT TARGET SDL2::TTF)
+    add_library(SDL2::TTF UNKNOWN IMPORTED)
+    set_target_properties(SDL2::TTF PROPERTIES
+                          IMPORTED_LOCATION "${SDL2_TTF_LIBRARY}"
+                          INTERFACE_INCLUDE_DIRECTORIES "${SDL2_TTF_INCLUDE_DIR}"
+                          INTERFACE_LINK_LIBRARIES SDL2::Core)
+  endif()
+endif()
