@@ -44,7 +44,7 @@ This module responds to the following cache variables:
     only applications need main().
     Otherwise, it is assumed you are building an application and this
     module will attempt to locate and set the proper link flags
-    as part of the returned SDL_LIBRARIES variable.
+    as part of the returned SDL2_LIBRARIES variable.
 
 
 Don't forget to include SDLmain.h and SDLmain.m in your project for the
@@ -71,6 +71,7 @@ Created by Amine Ben Hassouna:
   Adapt FindSDL.cmake to SDL2 (FindSDL2.cmake).
   Add cache variables for more flexibility:
     SDL2_PATH, SDL2_NO_DEFAULT_PATH (for details, see doc above).
+  Mark 'Threads' as a required dependency for non-OSX systems.
 
 
 Original FindSDL.cmake module:
@@ -185,7 +186,19 @@ endif()
 # frameworks may already provide it.
 # But for non-OSX systems, I will use the CMake Threads package.
 if(NOT APPLE)
-  find_package(Threads)
+  find_package(Threads QUIET)
+  if(NOT CMAKE_THREAD_LIBS_INIT)
+    set(SDL2_THREADS_NOT_FOUND "Could NOT find Threads (Threads is required by SDL2).")
+    if(SDL2_FIND_REQUIRED)
+      message(FATAL_ERROR ${SDL2_THREADS_NOT_FOUND})
+    else()
+        if(NOT SDL2_FIND_QUIETLY)
+          message(STATUS ${SDL2_THREADS_NOT_FOUND})
+        endif()
+      return()
+    endif()
+    unset(SDL2_THREADS_NOT_FOUND)
+  endif()
 endif()
 
 # MinGW needs an additional link flag, -mwindows
