@@ -8,9 +8,32 @@ library as well as other related libraries:
 - [SDL2_ttf][]
 - [SDL2_net][]
 - [SDL2_mixer][]
+- [SDL2_gfx][]
 
 These modules are based on the SDL (1.2) modules, with the same names,
-distributed with the CMake project.
+distributed with the CMake project. The SDL2_gfx module is also based
+on the SDL_image module.
+
+## Details and Improvements
+
+The improvements made to these modules are as follows:
+
+**FindSDL2.cmake**
+
+- Adapt `FindSDL.cmake` to `SDL2` (`FindSDL2.cmake`).
+- Add cache variables for more flexibility:<br>
+    `SDL2_PATH`, `SDL2_NO_DEFAULT_PATH`
+
+*For more details, please see the embedded documentation in `FindSDL2.cmake` file.*
+
+**FindSDL2_&lt;COMPONENT&gt;.cmake**
+
+- Adapt `FindSDL_<COMPONENT>.cmake` to `SDL2_<COMPONENT>` (`FindSDL2_<COMPONENT>.cmake`).
+- Add cache variables for more flexibility:<br>
+    `SDL2_<COMPONENT>_PATH`, `SDL2_<COMPONENT>_NO_DEFAULT_PATH`
+
+*For more details, please see the embedded documentation in
+`FindSDL2_<COMPONENT>.cmake` file.*
 
 
 
@@ -20,3 +43,4 @@ distributed with the CMake project.
 [SDL2_ttf]: https://www.libsdl.org/projects/SDL_ttf
 [SDL2_net]: https://www.libsdl.org/projects/SDL_net
 [SDL2_mixer]: https://www.libsdl.org/projects/SDL_mixer
+[SDL2_gfx]: http://www.ferzkopp.net/wordpress/2016/01/02/sdl_gfx-sdl2_gfx
