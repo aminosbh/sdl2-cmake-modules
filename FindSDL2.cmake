@@ -350,16 +350,6 @@ if(SDL2_FOUND)
       set_property(TARGET SDL2::Core APPEND PROPERTY
                    INTERFACE_LINK_LIBRARIES Threads::Threads)
     endif()
-
-    # MinGW needs an additional link flag, -mwindows
-    # and link to mingw32
-    if(MINGW)
-        set_property(TARGET SDL2::Core APPEND PROPERTY
-                     INTERFACE_LINK_LIBRARIES mingw32)
-        set_property(TARGET SDL2::Core APPEND PROPERTY
-                     INTERFACE_LINK_OPTIONS "-mwindows")
-    endif()
-
   endif()
 
   # SDL2::Main target
@@ -367,20 +357,31 @@ if(SDL2_FOUND)
   # For more details, please see above.
   if(NOT SDL2_BUILDING_LIBRARY AND NOT TARGET SDL2::Main)
 
-    if(SDL2_INCLUDE_DIR MATCHES ".framework" )
+    if(SDL2_INCLUDE_DIR MATCHES ".framework" OR NOT SDL2MAIN_LIBRARY)
       add_library(SDL2::Main INTERFACE IMPORTED)
-    elseif(SDL2MAIN_LIBRARY)
-      add_library(SDL2::Main UNKNOWN IMPORTED)
-      set_property(TARGET SDL2::Main PROPERTY
-                   IMPORTED_LOCATION "${SDL2MAIN_LIBRARY}")
-    elseif(UNIX)
-      add_library(SDL2::Main INTERFACE IMPORTED)
-    endif()
-
-    # Add SDL2::Core as a dependency
-    if(TARGET SDL2::Main)
       set_property(TARGET SDL2::Main PROPERTY
                    INTERFACE_LINK_LIBRARIES SDL2::Core)
+    elseif(SDL2MAIN_LIBRARY)
+      # MinGW requires that the mingw32 library is specified before the
+      # libSDL2main.a static library when linking.
+      # The SDL2::MainInternal target is used internally to make sure that
+      # CMake respects this condition.
+      add_library(SDL2::MainInternal UNKNOWN IMPORTED)
+      set_property(TARGET SDL2::MainInternal PROPERTY
+                   IMPORTED_LOCATION "${SDL2MAIN_LIBRARY}")
+      set_property(TARGET SDL2::MainInternal PROPERTY
+                   INTERFACE_LINK_LIBRARIES SDL2::Core)
+
+      add_library(SDL2::Main INTERFACE IMPORTED)
+
+      if(MINGW)
+        # MinGW needs an additional link flag '-mwindows' and link to mingw32
+        set_property(TARGET SDL2::Main PROPERTY
+                     INTERFACE_LINK_LIBRARIES "mingw32" "-mwindows")
+      endif()
+
+      set_property(TARGET SDL2::Main APPEND PROPERTY
+                   INTERFACE_LINK_LIBRARIES SDL2::MainInternal)
     endif()
 
   endif()
