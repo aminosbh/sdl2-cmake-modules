@@ -59,6 +59,7 @@ This module will set the following variables in your project:
   SDL2_LIBRARIES, the name of the library to link against
   SDL2_INCLUDE_DIRS, where to find SDL.h
   SDL2_FOUND, if false, do not try to link to SDL2
+  SDL2MAIN_FOUND, if false, do not try to link to SDL2main
   SDL2_VERSION_STRING, human-readable string containing the version of SDL2
 
 
@@ -310,8 +311,14 @@ endif()
 include(FindPackageHandleStandardArgs)
 
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL2
-                                  REQUIRED_VARS SDL2_LIBRARIES SDL2_INCLUDE_DIRS
+                                  REQUIRED_VARS SDL2_LIBRARY SDL2_INCLUDE_DIR
                                   VERSION_VAR SDL2_VERSION_STRING)
+
+if(SDL2MAIN_LIBRARY)
+  FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL2main
+                                    REQUIRED_VARS SDL2MAIN_LIBRARY SDL2_INCLUDE_DIR
+                                    VERSION_VAR SDL2_VERSION_STRING)
+endif()
 
 
 mark_as_advanced(SDL2_PATH
