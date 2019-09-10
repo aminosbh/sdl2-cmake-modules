@@ -236,7 +236,7 @@ endif()
 # frameworks may already provide it.
 # But for non-OSX systems, I will use the CMake Threads package.
 if(NOT APPLE)
-  find_package(Threads)
+  find_package(Threads QUIET)
   if(NOT Threads_FOUND)
     set(SDL2_THREADS_NOT_FOUND "Could NOT find Threads (Threads is required by SDL2).")
     if(SDL2_FIND_REQUIRED)
