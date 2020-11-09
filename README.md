@@ -45,7 +45,7 @@ The improvements made to these modules are as follows:
 ## Usage
 
 In order to use the SDL2 CMake modules, we have to clone this repository in a
-sud-directory `cmake/sdl2` in our project as follows:
+sub-directory `cmake/sdl2` in our project as follows:
 
 ```sh
 cd <PROJECT_DIR>
@@ -69,7 +69,7 @@ the following:
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/sdl2)
 ```
 
-Finally, we can use the SDL2 modules. There is two approaches that can be
+Finally, we can use the SDL2 modules. There are two approaches that can be
 adopted: A legacy approach and a modern approach. Both of them are supported.
 
 ### Modern CMake
@@ -117,7 +117,7 @@ target_link_libraries(${PROJECT_NAME} ${SDL2_GFX_LIBRARIES})
 
 ## Special customization variables
 
-Each module have special customization cache variables that can be used to help
+Each module has special customization cache variables that can be used to help
 the modules find the appropriate libraries:
 
 - `SDL2_PATH` and `SDL2_<COMPONENT>_PATH`:<br>
@@ -134,7 +134,7 @@ the modules find the appropriate libraries:
   Set the `SDL2main` library (.a) path. (Override)
 
 These variables could be used in case of Windows projects, and when the
-libraries are not localized in a standard pathes. They can be specified when
+libraries are not localized in standard pathes. They can be specified when
 executing the `cmake` command or when using the [CMake GUI][] (They are marked
 as advanced).
 
