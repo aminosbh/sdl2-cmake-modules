@@ -274,7 +274,12 @@ if(SDL2_LIBRARY)
   # So I use a temporary variable until the end so I can set the
   # "real" variable in one-shot.
   if(APPLE)
-    set(SDL2_LIBRARIES ${SDL2_LIBRARIES} -framework Cocoa)
+    # This makes the compiler on macOS print an error because it's not linking Cocoa the right way
+    # set(SDL2_LIBRARIES ${SDL2_LIBRARIES} -framework Cocoa)
+    # Instead use this:
+    find_library(COCOA_LIBRARY Cocoa)
+    # Then use this in your main CMakeLists.txt:
+    # target_link_libraries(${PROJECT_NAME} ${COCOA_LIBRARY})
   endif()
 
   # For threads, as mentioned Apple doesn't need this.
